@@ -9,7 +9,7 @@ dotenv.load_dotenv()
 
 # Slack API token
 SLACK_API_TOKEN = os.getenv("SLACK_API_TOKEN")
-SLACK_CHANNEL = "#dev"
+SLACK_CHANNEL = "#eurographics-bot"
 
 # OpenAI API key
 openai.organization = os.getenv("OPENAI_ORGANIZATION")
@@ -24,7 +24,7 @@ def summarize(title, abstract):
     ```"""
 
     text = f"title: {title}\nabstract: {abstract}"
-    print("text:", text)
+    print(text)
     response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
                 messages=[
@@ -34,8 +34,6 @@ def summarize(title, abstract):
                 temperature=0.25,
             )
     print("response:", response)
-    # result = 
-    # return f"{title}\n{result}\n"
     return response['choices'][0]['message']['content']
 
 def post_message(message):
@@ -73,10 +71,7 @@ def main():
             article = page_link.get_article()
             new_articles.append(article)
         
-    if new_articles == []:
-        message = "新しい論文はありませんでした。"
-        post_message(message)
-    else:
+    if new_articles != []:
         message = "新しい論文が追加されました！\n"
         for article in new_articles:
             summary = summarize(article.title, article.abstract)
